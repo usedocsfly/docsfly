@@ -1,0 +1,48 @@
+{
+  "name": "create-docsfly-app",
+  "version": "1.1.0",
+  "description": "Create a new Docsfly documentation app with shadcn/ui and Next.js App Router",
+  "keywords": ["docsfly", "docs", "documentation", "nextjs", "shadcn", "cli"],
+  "author": "Docsfly Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/docsfly/docsfly.git",
+    "directory": "packages/create-docsfly-app"
+  },
+  "target": "node",
+  "bin": {
+    "create-docsfly-app": "dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "templates/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "prepublishOnly": "bun run build",
+    "build": "bun build src/index.ts --target node --outdir dist",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun run build && bun dist/index.js test && rm -rf test",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "fs-extra": "^11.2.0",
+    "ora": "^8.1.1",
+    "prompts": "^2.4.2",
+    "validate-npm-package-name": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.8.4",
+    "@types/prompts": "^2.4.9",
+    "@types/validate-npm-package-name": "^4.0.2",
+    "typescript": "^5.6.3"
+  }
+}

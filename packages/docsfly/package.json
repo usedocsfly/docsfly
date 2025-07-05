@@ -1,0 +1,59 @@
+{
+  "name": "docsfly",
+  "version": "1.0.2",
+  "description": "Beautiful documentation framework built with Next.js and MDX",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "bun run build",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "documentation",
+    "mdx",
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwind"
+  ],
+  "author": "Docsfly Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/docsfly/docsfly"
+  },
+  "homepage": "https://docsfly.dev",
+  "bugs": {
+    "url": "https://github.com/docsfly/docsfly/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "dependencies": {
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "next": "^15.3.5",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}

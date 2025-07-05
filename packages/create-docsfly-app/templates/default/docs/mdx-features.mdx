@@ -1,0 +1,66 @@
+---
+title: MDX Features
+description: Learn about the powerful MDX features available in Docsfly
+order: 2
+---
+
+# MDX Features
+
+MDX allows you to write JSX directly in your Markdown files, giving you the power to create interactive documentation.
+
+## Basic Markdown
+
+All standard Markdown features are supported:
+
+- **Bold text**
+- *Italic text*
+- `Inline code`
+- [Links](https://example.com)
+
+### Code Blocks
+
+```javascript
+function greet(name) {
+  return `Hello, ${name}!`
+}
+```
+
+```python
+def greet(name):
+    return f"Hello, {name}!"
+```
+
+## React Components
+
+You can use React components directly in your MDX files:
+
+```mdx
+import { Button } from '@/components/ui/button'
+
+<Button>Click me!</Button>
+```
+
+## Frontmatter
+
+Every MDX file can include YAML frontmatter:
+
+```yaml
+---
+title: Page Title
+description: Page description
+order: 1
+category: Guide
+tags: [tutorial, basics]
+---
+```
+
+## Custom Components
+
+Docsfly provides several built-in components you can use in your MDX files:
+
+- Callout boxes for important information
+- Code blocks with syntax highlighting
+- Tabs for organizing content
+- And more!
+
+Check out the component documentation to learn more about available components.
