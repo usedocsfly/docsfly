@@ -1,0 +1,100 @@
+---
+title: Getting Started with Docsfly
+description: Learn how to get started with Docsfly, a modern documentation framework built with Next.js and MDX.
+order: 1
+category: Getting Started
+tags: ["setup", "quickstart", "introduction"]
+---
+
+Welcome to **Docsfly**, a modern documentation framework built with Next.js and MDX!
+
+<Callout type="info" title="What is Docsfly?">
+Docsfly is a powerful documentation framework that combines the flexibility of MDX with the performance of Next.js, allowing you to create beautiful, interactive documentation with ease.
+</Callout>
+
+## Features
+
+- **Next.js 15** with App Router
+- **MDX Support** with React components
+- **Tailwind CSS v4** for styling
+- **TypeScript** for type safety
+- **Customizable** theming system
+- **File-based routing** for docs
+- **Built-in components** for enhanced documentation
+
+## Quick Start
+
+<Tabs items={[
+  { id: 'bun', label: 'Bun', content: (
+    <CodeBlock language="bash">
+      {`# Install dependencies
+bun install
+
+# Start development server
+bun run dev`}
+    </CodeBlock>
+  )},
+  { id: 'npm', label: 'npm', content: (
+    <CodeBlock language="bash">
+      {`# Install dependencies
+npm install
+
+# Start development server
+npm run dev`}
+    </CodeBlock>
+  )},
+  { id: 'yarn', label: 'Yarn', content: (
+    <CodeBlock language="bash">
+      {`# Install dependencies
+yarn install
+
+# Start development server
+yarn dev`}
+    </CodeBlock>
+  )}
+]} />
+
+## Writing Documentation
+
+You can write documentation using MDX, which allows you to use React components within your markdown:
+
+<CodeBlock language="mdx" filename="example.mdx">
+{`---
+title: My Documentation
+description: An example documentation page
+category: Examples
+---
+
+# My Documentation
+
+This is a paragraph with **bold text**.
+
+<Callout type="warning">
+This is a warning callout!
+</Callout>
+
+<Tabs items={[
+  { id: 'tab1', label: 'Tab 1', content: 'Content for tab 1' },
+  { id: 'tab2', label: 'Tab 2', content: 'Content for tab 2' }
+]} />
+
+- List item 1
+- List item 2`}
+</CodeBlock>
+
+<Callout type="success" title="Pro Tip">
+MDX files support all standard markdown syntax plus React components! This gives you incredible flexibility in creating interactive documentation.
+</Callout>
+
+## Available Components
+
+Docsfly comes with several built-in components:
+
+- `<Callout>` - For highlighting important information
+- `<CodeBlock>` - For syntax-highlighted code blocks
+- `<Tabs>` - For organizing content in tabs
+- `<InlineCode>` - For inline code snippets
+
+## Next Steps
+
+Check out the [Components Guide](/docs/components) to learn about all available components and how to use them.
