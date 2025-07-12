@@ -13,8 +13,5 @@ export default defineConfig({
   bundle: false,
   clean: true,
   external: ['next'],
-  outDir: 'dist',
-  esbuildOptions(options) {
-    options.jsx = 'preserve'
-  },
+  outDir: 'dist'
 })
