@@ -13,10 +13,9 @@
     }
   },
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.js --external:fs --external:path --external:chokidar && esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs --external:fs --external:path --external:chokidar && npm run build:declaration",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
     "prepublishOnly": "bun run build",
-    "build:declaration": "tsc --emitDeclarationOnly",
-    "dev": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs --watch",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -59,7 +58,7 @@
     "@types/node": "^24.0.13",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "esbuild": "^0.25.6",
+    "tsup": "^8.3.5",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
