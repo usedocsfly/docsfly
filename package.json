@@ -5,7 +5,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "!packages/create-docsfly-app/templates/*"
   ],
   "scripts": {
     "build": "turbo run build",
