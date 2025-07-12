@@ -66,9 +66,6 @@ export async function createApp(
     );
   }
 
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-
   const projectPath = path.resolve(projectName || ".");
   const templatePath = path.resolve(
     __dirname,
