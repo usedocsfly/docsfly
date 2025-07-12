@@ -12,6 +12,9 @@ export default defineConfig({
   sourcemap: true,
   bundle: false,
   clean: true,
-  external: ['next'],
-  outDir: 'dist'
+  external: ['react', 'react-dom', 'next'],
+  outDir: 'dist',
+  esbuildOptions(options) {
+    options.jsx = 'automatic'
+  },
 })
