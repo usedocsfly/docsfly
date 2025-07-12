@@ -8,9 +8,6 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: ['react', 'react-dom', 'next'],
-  banner: {
-    js: '"use client";',
-  },
   esbuildOptions(options) {
     options.jsx = 'automatic'
   },
