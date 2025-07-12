@@ -45,20 +45,6 @@ jobs:
           TAG_VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Update package versions
-        run: |
-          VERSION=${{ steps.version.outputs.version }}
-          
-          # Update docsfly package
-          cd packages/docsfly
-          bun pm version $VERSION
-          cd ../..
-          
-          # Update create-docsfly-app package
-          cd packages/create-docsfly-app
-          bun pm version $VERSION
-          cd ../..
-
       - name: Publish to npm (stable)
         run: |
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
