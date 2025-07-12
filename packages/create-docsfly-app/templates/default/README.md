@@ -1,6 +1,6 @@
 # My Docsfly App
 
-A documentation website built with [Docsfly](https://github.com/docsfly/docsfly).
+A documentation website built with [Docsfly](https://github.com/docsflyapp/docsfly).
 
 ## Getting Started
 

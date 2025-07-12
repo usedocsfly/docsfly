@@ -28,7 +28,7 @@ export default function Home() {
             </Button>
             <Button variant="outline" size="lg">
               <Link
-                href="https://github.com/docsfly/docsfly"
+                href="https://github.com/docsflyapp/docsfly"
                 target="_blank"
                 rel="noopener noreferrer"
               >
