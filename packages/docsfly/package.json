@@ -18,9 +18,9 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "prepublishOnly": "bun run build",
-    "dev": "tsc --watch",
+    "dev": "tsup --watch",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -63,6 +63,7 @@
     "@types/node": "^24.0.13",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "tsup": "^8.3.5",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
