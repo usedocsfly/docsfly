@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "prepublishOnly": "bun run build",
-    "build": "bun build src/index.ts --target node --outdir dist && echo '#!/usr/bin/env node' | cat - dist/index.js > dist/index.js.tmp && mv dist/index.js.tmp dist/index.js && chmod +x dist/index.js",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.js && echo '#!/usr/bin/env node' | cat - dist/index.js > dist/index.js.tmp && mv dist/index.js.tmp dist/index.js && chmod +x dist/index.js",
     "dev": "bun --watch src/index.ts",
     "test": "bun run build && bun dist/index.js test && rm -rf test",
     "typecheck": "tsc --noEmit"

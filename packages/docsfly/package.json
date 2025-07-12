@@ -13,10 +13,10 @@
     }
   },
   "scripts": {
-    "build": "bun run build.ts && bun run build:declaration",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.js && esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs && npm run build:declaration",
     "prepublishOnly": "bun run build",
     "build:declaration": "tsc --emitDeclarationOnly",
-    "dev": "bun build src/index.ts --outdir dist --format esm,cjs --splitting --sourcemap --watch",
+    "dev": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs --watch",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
