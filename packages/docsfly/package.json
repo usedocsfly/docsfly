@@ -18,9 +18,9 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts src/components/index.ts --format cjs,esm --dts",
+    "build": "tsc && tsc --module esnext --outDir dist/esm && mv dist/esm/src/* dist/esm/ && rmdir dist/esm/src",
     "prepublishOnly": "bun run build",
-    "dev": "tsup src/index.ts src/components/index.ts --format cjs,esm --dts --watch",
+    "dev": "tsc --watch",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -63,7 +63,6 @@
     "@types/node": "^24.0.13",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "tsup": "^8.3.5",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
