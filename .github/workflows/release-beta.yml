@@ -57,7 +57,7 @@ jobs:
           cd packages/create-docsfly-app
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           BETA_VERSION="${CURRENT_VERSION}-beta.${TIMESTAMP}"
-          bun version $BETA_VERSION
+          bun pm version $BETA_VERSION
           cd ../..
 
       - name: Publish to npm (beta)

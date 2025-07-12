@@ -55,12 +55,12 @@ print_status "Updating package versions..."
 
 # Update docsfly package
 cd packages/docsfly
-bun version $VERSION --no-git-tag-version
+bun pm version $VERSION --no-git-tag-version
 cd ../..
 
 # Update create-docsfly-app package
 cd packages/create-docsfly-app
-bun version $VERSION --no-git-tag-version
+bun pm version $VERSION --no-git-tag-version
 cd ../..
 
 # Build packages
