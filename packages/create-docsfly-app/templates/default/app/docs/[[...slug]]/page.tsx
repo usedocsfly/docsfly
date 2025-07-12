@@ -1,4 +1,4 @@
-import { DocsPage, getDocBySlug } from "docsfly";
+import { getAllDocs, getDocBySlug, DocsListing, DocsPage  } from "docsfly";
 
 export default async function Page({
   params: _params,
@@ -9,7 +9,8 @@ export default async function Page({
   const params = await _params;
   const post = await getDocBySlug(params.slug ? params.slug.join("/") : "");
   if (!post) {
-    return <div>Document not found</div>;
+    const docs = await getAllDocs();
+    return <DocsListing docs={docs} />;
   }
   
   return (

@@ -1,6 +1,6 @@
 {
   "name": "create-docsfly-app",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Create a new Docsfly documentation app with shadcn/ui and Next.js App Router",
   "keywords": ["docsfly", "docs", "documentation", "nextjs", "shadcn", "cli"],
   "author": "Docsfly Team",
@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "prepublishOnly": "bun run build",
-    "build": "bun build src/index.ts --target node --outdir dist",
+    "build": "bun build src/index.ts --target node --outdir dist && echo '#!/usr/bin/env node' | cat - dist/index.js > dist/index.js.tmp && mv dist/index.js.tmp dist/index.js && chmod +x dist/index.js",
     "dev": "bun --watch src/index.ts",
     "test": "bun run build && bun dist/index.js test && rm -rf test",
     "typecheck": "tsc --noEmit"
@@ -30,19 +30,18 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
-    "chalk": "^5.3.0",
-    "commander": "^12.1.0",
-    "fs-extra": "^11.2.0",
-    "ora": "^8.1.1",
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "fs-extra": "^11.3.0",
+    "ora": "^8.2.0",
     "prompts": "^2.4.2",
-    "validate-npm-package-name": "^6.0.0"
+    "validate-npm-package-name": "^6.0.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.8.4",
+    "@types/node": "22",
     "@types/prompts": "^2.4.9",
     "@types/validate-npm-package-name": "^4.0.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.8.3"
   }
 }

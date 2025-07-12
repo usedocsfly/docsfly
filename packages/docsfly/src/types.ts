@@ -8,14 +8,24 @@ export interface DocsflyConfig {
   docs: {
     dir: string;
     baseUrl?: string;
+    compact?: boolean;
     sidebar?: {
       title?: string;
       collapsible?: boolean;
       autoSort?: boolean;
     };
   };
+  header?: {
+    title?: string;
+    logo?: string;
+    navigation?: Array<{
+      label: string;
+      href: string;
+    }>;
+    showSearch?: boolean;
+  };
   theme?: {
-    defaultTheme?: 'light' | 'dark' | 'system';
+    defaultTheme?: "light" | "dark" | "system";
     toggleEnabled?: boolean;
     colors?: {
       primary?: string;
@@ -68,4 +78,13 @@ export interface DocNavItem {
   title: string;
   href: string;
   children?: DocNavItem[];
+  order?: number;
+  collapsed?: boolean;
+}
+
+export interface CategoryConfig {
+  name: string;
+  order?: number;
+  description?: string;
+  collapsed?: boolean;
 }

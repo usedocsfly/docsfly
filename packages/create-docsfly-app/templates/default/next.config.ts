@@ -1,7 +1,9 @@
 import { NextConfig } from "next";
+import createMDX from '@next/mdx';
 
 const nextConfig: NextConfig = {
-  turbo: {
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
+  turbopack: {
     rules: {
       "*.svg": {
         loaders: ["@svgr/webpack"],
@@ -11,4 +13,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
+
+export default withMDX(nextConfig);

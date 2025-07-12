@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Doc } from '../types';
 import { getConfig } from '../config';
+import Link from 'next/link'; // Ensure this is imported correctly
 
 interface SearchProps {
   docs: Doc[];
@@ -81,19 +82,6 @@ interface SearchResultProps {
 
 function SearchResult({ doc, query, onSelect }: SearchResultProps) {
   const config = getConfig();
-  const [Link, setLink] = React.useState<any>(null);
-
-  React.useEffect(() => {
-    const loadNext = async () => {
-      try {
-        const nextLink = await import('next/link');
-        setLink(() => nextLink.default);
-      } catch (error) {
-        console.warn('Next.js not available, using fallback link');
-      }
-    };
-    loadNext();
-  }, []);
 
   const href = `${config.docs.baseUrl || '/docs'}/${doc.slug}`;
 

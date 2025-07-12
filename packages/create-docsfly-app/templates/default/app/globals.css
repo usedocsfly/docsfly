@@ -1,6 +1,11 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@source "../node_modules/docsfly/**/*.{ts,tsx}";
+@source "../../../packages/docsfly/src/**/*.{ts,tsx}";
 
 @import "tw-animate-css";
+
 
 @custom-variant dark (&:is(.dark *));
 

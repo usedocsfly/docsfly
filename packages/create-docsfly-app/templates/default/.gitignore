@@ -8,6 +8,9 @@ out/
 build/
 dist/
 
+# no lock
+bun.lock
+
 # Environment variables
 .env
 .env.local

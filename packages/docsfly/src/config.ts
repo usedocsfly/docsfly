@@ -1,5 +1,4 @@
 import { DocsflyConfig } from './types';
-import path from 'path';
 
 let config: DocsflyConfig | null = null;
 
@@ -8,62 +7,73 @@ export function loadConfig(): DocsflyConfig {
     return config;
   }
 
-  // Try to load config from project root
-  const configPath = path.join(process.cwd(), 'docsfly.config.ts');
-  
-  try {
-    // Dynamic import for TypeScript config
-    const configModule = require(configPath);
-    config = configModule.default || configModule;
-    
-    // Apply defaults
-    config = {
-      ...getDefaultConfig(),
-      ...config,
-      site: {
-        ...getDefaultConfig().site,
-        ...config?.site,
-      },
-      docs: {
-        ...getDefaultConfig().docs,
-        ...config?.docs,
-        sidebar: {
-          ...getDefaultConfig().docs.sidebar,
-          ...config?.docs?.sidebar,
-        },
-      },
-      theme: {
-        ...getDefaultConfig().theme,
-        ...config?.theme,
-        colors: {
-          ...getDefaultConfig().theme?.colors,
-          ...config?.theme?.colors,
-        },
-      },
-      navigation: {
-        ...getDefaultConfig().navigation,
-        ...config?.navigation,
-        logo: {
-          ...getDefaultConfig().navigation?.logo,
-          ...config?.navigation?.logo,
-        },
-      },
-      mdx: {
-        ...getDefaultConfig().mdx,
-        ...config?.mdx,
-        components: {
-          ...getDefaultConfig().mdx?.components,
-          ...config?.mdx?.components,
-        },
-      },
-    };
-    
-    return config;
-  } catch (error) {
-    console.warn('No docsfly.config.ts found or error loading config, using defaults');
-    config = getDefaultConfig();
-    return config;
+  // Only try to load config on server side
+  if (typeof window === 'undefined') {
+    try {
+      const path = require('path');
+      const fs = require('fs');
+      
+      const configPath = path.join('docsfly.config.ts')
+      
+      if (fs.existsSync(configPath)) {
+        import(configPath).then(mod => {
+          const userConfig = mod.default || mod;
+          config = mergeWithDefaults(userConfig);
+        });
+      }
+    } catch (error) {
+      console.warn('Error loading docsfly.config.ts:', error);
+    }
   }
+
+  // Fallback to defaults
+  config = getDefaultConfig();
+  return config;
+}
+
+function mergeWithDefaults(userConfig: Partial<DocsflyConfig>): DocsflyConfig {
+  const defaults = getDefaultConfig();
+  
+  return {
+    ...defaults,
+    ...userConfig,
+    site: {
+      ...defaults.site,
+      ...userConfig.site,
+    },
+    docs: {
+      ...defaults.docs,
+      ...userConfig.docs,
+      sidebar: {
+        ...defaults.docs.sidebar,
+        ...userConfig.docs?.sidebar,
+      },
+    },
+    theme: {
+      ...defaults.theme,
+      ...userConfig.theme,
+      colors: {
+        ...defaults.theme?.colors,
+        ...userConfig.theme?.colors,
+      },
+    },
+    navigation: {
+      ...defaults.navigation,
+      ...userConfig.navigation,
+      logo: {
+        ...defaults.navigation?.logo,
+        ...userConfig.navigation?.logo,
+      },
+    },
+    mdx: {
+      ...defaults.mdx,
+      ...userConfig.mdx,
+      components: {
+        ...defaults.mdx?.components,
+        ...userConfig.mdx?.components,
+      },
+    },
+  };
 }
 
 function getDefaultConfig(): DocsflyConfig {
@@ -75,11 +85,26 @@ function getDefaultConfig(): DocsflyConfig {
     docs: {
       dir: 'docs',
       baseUrl: '/docs',
+      compact: false,
       sidebar: {
         title: 'Documentation',
         collapsible: true,
         autoSort: true,
       },
+    },
+    header: {
+      title: 'Docsfly',
+      navigation: [
+        {
+          label: 'Home',
+          href: '/',
+        },
+        {
+          label: 'GitHub',
+          href: 'https://github.com/docsflyapp/docsfly',
+        }
+      ],
+      showSearch: true
     },
     theme: {
       defaultTheme: 'light',

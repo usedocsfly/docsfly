@@ -1,27 +1,22 @@
-import { DocsConfig } from 'docsfly'
+import { DocsflyConfig } from 'docsfly'
 
-const config: DocsConfig = {
+const config: DocsflyConfig = {
   site: {
-    title: 'My Docsfly App',
+    name: 'My Docsfly App',
     description: 'A documentation website built with Docsfly',
     url: 'https://my-docsfly-app.vercel.app',
   },
   docs: {
-    path: 'docs',
-    defaultLayout: 'default',
-  },
-  theme: {
-    primaryColor: 'blue',
-    accentColor: 'purple',
+    dir: 'docs',
   },
   navigation: {
     logo: {
-      text: 'My Docs',
+      text: 'My Docsfly App',
     },
     links: [
       {
-        title: 'GitHub',
-        href: 'https://github.com/docsfly/docsfly',
+        text: 'GitHub',
+        href: 'https://github.com/docsflyapp/docsfly',
         external: true,
       },
     ],

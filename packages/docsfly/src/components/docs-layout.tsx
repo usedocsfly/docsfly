@@ -1,76 +1,34 @@
-'use client';
-
-import React, { ReactNode } from 'react';
-import { DocNavItem } from '../types';
-import { Sidebar } from './sidebar';
-
+import { ReactNode } from "react";
+import { DocNavItem } from "../types";
+import { Sidebar } from "./sidebar";
+import { getConfig } from "../config";
+import { HotReloader } from "../hot-reload/reloader";
 interface DocsLayoutProps {
   children: ReactNode;
   navigation: DocNavItem[];
   className?: string;
 }
 
-export function DocsLayout({ children, navigation, className = '' }: DocsLayoutProps) {
-  
-  return (
-    <div className={`flex min-h-screen ${className}`}>
-      <Sidebar navigation={navigation} />
-      <main className="flex-1 overflow-auto">
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          {children}
-        </div>
-      </main>
-    </div>
-  );
-}
+export function DocsLayout({
+  children,
+  navigation,
+  className = "",
+}: DocsLayoutProps) {
+  const config = getConfig();
 
-interface DocsPageProps {
-  children: React.ReactNode;
-  title?: string;
-  description?: string;
-  lastUpdated?: string;
-  tags?: string[];
-  className?: string;
-}
-
-export function DocsPage({ 
-  children, 
-  title, 
-  description, 
-  lastUpdated, 
-  tags,
-  className = '' 
-}: DocsPageProps) {
   return (
-    <article className={`prose prose-slate max-w-none dark:prose-invert ${className}`}>
-      {title && (
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">{title}</h1>
-          {description && (
-            <p className="text-xl text-muted-foreground mb-4">{description}</p>
-          )}
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            {lastUpdated && (
-              <span>Last updated: {new Date(lastUpdated).toLocaleDateString()}</span>
-            )}
-            {tags && tags.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2 py-1 bg-secondary text-secondary-foreground rounded-md"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        </header>
-      )}
-      <div className="doc-content">
-        {children}
+    <div
+      className={`flex flex-1 justify-center overflow-hidden pt-8 ${className}`}
+    >
+      <div
+        className={`flex justify-center max-w-full ${
+          config.docs.compact ? "md:max-w-4xl" : "md:max-w-7xl"
+        } gap-24 mx-auto w-full h-full`}
+      >
+        <HotReloader />
+        <Sidebar navigation={navigation} />
+        <div className="flex-1 overflow-y-auto">{children}</div>
       </div>
-    </article>
+    </div>
   );
 }
