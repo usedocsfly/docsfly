@@ -6,6 +6,10 @@ on:
       - 'v*'
   workflow_dispatch:
 
+concurrency:
+  group: release-stable
+  cancel-in-progress: true
+
 jobs:
   release-stable:
     runs-on: ubuntu-latest
@@ -47,12 +51,12 @@ jobs:
           
           # Update docsfly package
           cd packages/docsfly
-          bun version $VERSION --no-git-tag-version
+          bun version $VERSION
           cd ../..
           
           # Update create-docsfly-app package
           cd packages/create-docsfly-app
-          bun version $VERSION --no-git-tag-version
+          bun version $VERSION
           cd ../..
 
       - name: Publish to npm (stable)
