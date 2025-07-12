@@ -4,6 +4,7 @@ export { DocsPage } from './docs-page';
 export { DocsLayout } from './docs-layout';
 export { Header } from './header';
 export { MainLayout } from './main-layout';
+export { ClientLayout } from './client-layout';
 export { Search } from './search';
 export { MDXRenderer } from './mdx-renderer';
 

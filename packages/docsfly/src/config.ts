@@ -7,27 +7,31 @@ export function loadConfig(): DocsflyConfig {
     return config;
   }
 
-  // Only try to load config on server side
-  if (typeof window === 'undefined') {
-    try {
-      const path = require('path');
-      const fs = require('fs');
-      
-      const configPath = path.join('docsfly.config.ts')
-      
-      if (fs.existsSync(configPath)) {
-        import(configPath).then(mod => {
-          const userConfig = mod.default || mod;
-          config = mergeWithDefaults(userConfig);
-        });
-      }
-    } catch (error) {
-      console.warn('Error loading docsfly.config.ts:', error);
-    }
+  // Client-side: always use defaults
+  if (typeof window !== 'undefined') {
+    config = getDefaultConfig();
+    return config;
   }
 
-  // Fallback to defaults
-  config = getDefaultConfig();
+  // Server-side: try to load config file
+  try {
+    const path = require('path');
+    const fs = require('fs');
+    
+    const configPath = path.join(process.cwd(), 'docsfly.config.ts');
+    
+    if (fs.existsSync(configPath)) {
+      // For server-side, we need to handle this synchronously or differently
+      // For now, just use defaults
+      config = getDefaultConfig();
+    } else {
+      config = getDefaultConfig();
+    }
+  } catch (error) {
+    console.warn('Error loading docsfly.config.ts:', error);
+    config = getDefaultConfig();
+  }
+
   return config;
 }
 

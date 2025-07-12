@@ -1,16 +1,14 @@
-"use client";
-
 import { ReactNode } from "react";
 import { Header } from "./header";
-import { ThemeProvider } from "./ui/theme-provider";
+import { ClientLayout } from "./client-layout";
 
-export function MainLayout({ children }: { children: ReactNode }) {
+export async function MainLayout({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ClientLayout>
       <div className="flex flex-col h-screen bg-background text-foreground">
         <Header />
         {children}
       </div>
-    </ThemeProvider>
+    </ClientLayout>
   );
 }

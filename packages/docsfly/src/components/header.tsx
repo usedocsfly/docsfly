@@ -1,34 +1,10 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { loadConfig } from "../config";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-interface Config {
-  header?: {
-    title?: string;
-    logo?: string;
-    showSearch?: boolean;
-    navigation?: Array<{ href: string; label: string; }>;
-  };
-}
-
-export function Header() {
-  const [config, setConfig] = useState<Config>({});
-
-  useEffect(() => {
-    // Load config on client side
-    const loadClientConfig = async () => {
-      try {
-        const { loadConfig } = await import("../config");
-        const loadedConfig = loadConfig();
-        setConfig(loadedConfig);
-      } catch (error) {
-        console.error('Failed to load config:', error);
-      }
-    };
-    loadClientConfig();
-  }, []);
+export async function Header() {
+  const config = loadConfig();
 
   return (
     <header className="border-b shadow-sm">
