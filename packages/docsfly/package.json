@@ -18,7 +18,7 @@
     }
   },
   "scripts": {
-    "build": "tsc && tsc --module esnext --outDir dist/esm && mv dist/esm/src/* dist/esm/ && rmdir dist/esm/src",
+    "build": "tsc",
     "prepublishOnly": "bun run build",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit"
