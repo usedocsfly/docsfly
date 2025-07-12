@@ -1,6 +1,6 @@
 {
   "name": "docsfly",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Beautiful documentation framework built with Next.js and MDX",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

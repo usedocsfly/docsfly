@@ -1,6 +1,6 @@
 {
   "name": "create-docsfly-app",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Create a new Docsfly documentation app with shadcn/ui and Next.js App Router",
   "keywords": ["docsfly", "docs", "documentation", "nextjs", "shadcn", "cli"],
   "author": "Docsfly Team",
