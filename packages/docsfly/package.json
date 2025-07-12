@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.js && esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs && npm run build:declaration",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.js --external:fs --external:path --external:chokidar && esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs --external:fs --external:path --external:chokidar && npm run build:declaration",
     "prepublishOnly": "bun run build",
     "build:declaration": "tsc --emitDeclarationOnly",
     "dev": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs --watch",
