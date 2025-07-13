@@ -28,8 +28,8 @@ jobs:
       - name: Check for changes in docsfly package
         id: changes
         run: |
-          # Get the latest stable tag
-          LATEST_TAG=$(git tag -l "v*" --sort=-version:refname | head -n 2 | tail -n 1)
+          # Get the latest stable tag (exclude beta tags)
+          LATEST_TAG=$(git tag -l "v*" --sort=-version:refname | grep -v "beta" | head -n 1)
           
           if [ -z "$LATEST_TAG" ]; then
             echo "No previous stable tag found, will publish"
@@ -120,8 +120,8 @@ jobs:
       - name: Check for changes in create-docsfly-app package
         id: changes
         run: |
-          # Get the latest stable tag
-          LATEST_TAG=$(git tag -l "v*" --sort=-version:refname | head -n 2 | tail -n 1)
+          # Get the latest stable tag (exclude beta tags)
+          LATEST_TAG=$(git tag -l "v*" --sort=-version:refname | grep -v "beta" | head -n 1)
           
           if [ -z "$LATEST_TAG" ]; then
             echo "No previous stable tag found, will publish"
