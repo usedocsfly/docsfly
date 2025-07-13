@@ -1,11 +1,19 @@
-import path, { dirname } from "path";
+import path from "path";
 import fs from "fs-extra";
 import prompts from "prompts";
 import chalk from "chalk";
 import ora from "ora";
 import { execSync } from "child_process";
 import validateProjectName from "validate-npm-package-name";
-import { fileURLToPath } from "url";
+
+function isGitRepository(): boolean {
+  try {
+    execSync("git rev-parse --git-dir", { stdio: "pipe" });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export interface CreateAppOptions {
   template: string;
@@ -18,28 +26,86 @@ export async function createApp(
   options: CreateAppOptions = { template: "default" }
 ) {
   let projectName = projectDirectory;
+  let projectPath: string;
 
-  if (!projectName) {
-    const response = await prompts({
-      type: "text",
-      name: "projectName",
-      message: "What is your project named?",
-      initial: "my-docsfly-app",
-      validate: (name) => {
-        const validation = validateProjectName(name);
-        if (validation.validForNewPackages) {
-          return true;
-        }
-        return "Invalid project name";
-      },
-    });
+  // Handle special case for current directory
+  if (projectName === "./" || projectName === ".") {
+    projectPath = process.cwd();
+    projectName = path.basename(projectPath);
+  } else {
+    if (!projectName) {
+      const response = await prompts({
+        type: "text",
+        name: "projectName",
+        message: "What is your project named?",
+        initial: "my-docsfly-app",
+        validate: (name) => {
+          if (name === "./" || name === ".") {
+            return true;
+          }
+          const validation = validateProjectName(name);
+          if (validation.validForNewPackages) {
+            return true;
+          }
+          return "Invalid project name";
+        },
+      });
 
-    if (!response.projectName) {
-      console.log(chalk.red("✖ Project name is required"));
-      process.exit(1);
+      if (!response.projectName) {
+        console.log(chalk.red("✖ Project name is required"));
+        process.exit(1);
+      }
+
+      projectName = response.projectName;
     }
 
-    projectName = response.projectName;
+    // Handle case where user inputs "./" or "." during prompt
+    if (projectName === "./" || projectName === ".") {
+      projectPath = process.cwd();
+      projectName = path.basename(projectPath);
+    } else {
+      projectPath = path.resolve(projectName || ".");
+    }
+  }
+
+  // Check if directory exists and is not empty (unless it's current directory)
+  if (projectPath !== process.cwd() && fs.existsSync(projectPath)) {
+    console.log(chalk.red(`✖ Directory ${projectName} already exists`));
+    process.exit(1);
+  }
+
+  // If using current directory, check if it's empty
+  if (projectPath === process.cwd()) {
+    const files = fs.readdirSync(projectPath).filter(file => !file.startsWith('.'));
+    if (files.length > 0) {
+      console.log(chalk.red(`✖ Current directory is not empty`));
+      process.exit(1);
+    }
+  }
+
+  // Check if we should ask for installation and git options
+  if (options.skipInstall === undefined || options.skipGit === undefined) {
+    const setupResponse = await prompts([
+      {
+        type: options.skipInstall === undefined ? "confirm" : null,
+        name: "shouldInstall",
+        message: "Would you like to install dependencies?",
+        initial: true,
+      },
+      {
+        type: options.skipGit === undefined ? "confirm" : null,
+        name: "shouldInitGit",
+        message: "Would you like to initialize a git repository?",
+        initial: !isGitRepository(),
+      },
+    ]);
+
+    if (options.skipInstall === undefined) {
+      options.skipInstall = !setupResponse.shouldInstall;
+    }
+    if (options.skipGit === undefined) {
+      options.skipGit = !setupResponse.shouldInitGit;
+    }
   }
 
   const packageManager = detectPackageManager();
@@ -66,7 +132,6 @@ export async function createApp(
     );
   }
 
-  const projectPath = path.resolve(projectName || ".");
   const templatePath = path.resolve(
     __dirname,
     "..",
@@ -75,12 +140,6 @@ export async function createApp(
   );
 
   console.log(templatePath);
-
-  // Check if directory exists
-  if (fs.existsSync(projectPath)) {
-    console.log(chalk.red(`✖ Directory ${projectName} already exists`));
-    process.exit(1);
-  }
 
   // Check if template exists
   if (!fs.existsSync(templatePath)) {
@@ -114,7 +173,7 @@ export async function createApp(
     try {
       execSync(`${packageManager} install`, {
         cwd: projectPath,
-        stdio: "pipe",
+        stdio: ["ignore", "pipe", "pipe"],
       });
       installSpinner.succeed("Dependencies installed");
     } catch (error) {
@@ -129,13 +188,19 @@ export async function createApp(
   if (!options.skipGit) {
     const gitSpinner = ora("Initializing git repository...").start();
     try {
-      execSync("git init", { cwd: projectPath, stdio: "pipe" });
-      execSync("git add .", { cwd: projectPath, stdio: "pipe" });
-      execSync('git commit -m "Initial commit"', {
-        cwd: projectPath,
-        stdio: "pipe",
-      });
-      gitSpinner.succeed("Git repository initialized");
+      // Check if git is already initialized in the project directory
+      const gitDir = path.join(projectPath, ".git");
+      if (!fs.existsSync(gitDir)) {
+        execSync("git init", { cwd: projectPath, stdio: "pipe" });
+        execSync("git add .", { cwd: projectPath, stdio: "pipe" });
+        execSync('git commit -m "Initial commit"', {
+          cwd: projectPath,
+          stdio: "pipe",
+        });
+        gitSpinner.succeed("Git repository initialized");
+      } else {
+        gitSpinner.succeed("Git repository already exists");
+      }
     } catch (error) {
       gitSpinner.fail("Failed to initialize git");
       console.log(chalk.yellow("Please initialize git manually"));

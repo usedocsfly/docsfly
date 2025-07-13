@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  release-beta:
+  release-docsfly-beta:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -27,21 +27,49 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check for changes in docsfly package
+        id: changes
+        run: |
+          # Get the latest beta tag for docsfly
+          LATEST_TAG=$(git tag -l "v*-beta.*" --sort=-version:refname | head -n 1)
+          
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No previous beta tag found, will publish"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Latest tag: $LATEST_TAG"
+            # Check if there are changes in packages/docsfly since the last tag
+            CHANGES=$(git diff --name-only $LATEST_TAG HEAD -- packages/docsfly/)
+            if [ -n "$CHANGES" ]; then
+              echo "Changes detected in packages/docsfly:"
+              echo "$CHANGES"
+              echo "changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "No changes in packages/docsfly since $LATEST_TAG"
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
       - name: Setup Bun
+        if: steps.changes.outputs.changed == 'true'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies
+        if: steps.changes.outputs.changed == 'true'
         run: bun install
 
       - name: Run tests
+        if: steps.changes.outputs.changed == 'true'
         run: bun run test
 
       - name: Build packages
+        if: steps.changes.outputs.changed == 'true'
         run: bun run build
 
       - name: Bump version to beta
+        if: steps.changes.outputs.changed == 'true'
         run: |
           # Get current timestamp for beta version
           TIMESTAMP=$(date +%Y%m%d%H%M%S)
@@ -51,23 +79,99 @@ jobs:
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           BETA_VERSION="${CURRENT_VERSION}-beta.${TIMESTAMP}"
           bun pm version $BETA_VERSION
-          cd ../..
           
-          # Bump create-docsfly-app package
-          cd packages/create-docsfly-app
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          BETA_VERSION="${CURRENT_VERSION}-beta.${TIMESTAMP}"
-          bun pm version $BETA_VERSION
+          # Create a tag for this beta release
           cd ../..
+          git tag "v${BETA_VERSION}"
+          git push origin "v${BETA_VERSION}"
 
       - name: Publish to npm (beta)
+        if: steps.changes.outputs.changed == 'true'
         run: |
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
           
           # Publish docsfly
           cd packages/docsfly
           npm publish --tag beta
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  release-create-docsfly-app-beta:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      NPM_CONFIG_PROVENANCE: true
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for changes in create-docsfly-app package
+        id: changes
+        run: |
+          # Get the latest beta tag for create-docsfly-app
+          LATEST_TAG=$(git tag -l "v*-beta.*" --sort=-version:refname | head -n 1)
+          
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No previous beta tag found, will publish"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Latest tag: $LATEST_TAG"
+            # Check if there are changes in packages/create-docsfly-app since the last tag
+            CHANGES=$(git diff --name-only $LATEST_TAG HEAD -- packages/create-docsfly-app/)
+            if [ -n "$CHANGES" ]; then
+              echo "Changes detected in packages/create-docsfly-app:"
+              echo "$CHANGES"
+              echo "changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "No changes in packages/create-docsfly-app since $LATEST_TAG"
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Setup Bun
+        if: steps.changes.outputs.changed == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        if: steps.changes.outputs.changed == 'true'
+        run: bun install
+
+      - name: Run tests
+        if: steps.changes.outputs.changed == 'true'
+        run: bun run test
+
+      - name: Build packages
+        if: steps.changes.outputs.changed == 'true'
+        run: bun run build
+
+      - name: Bump version to beta
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          # Get current timestamp for beta version
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          
+          # Bump create-docsfly-app package
+          cd packages/create-docsfly-app
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          BETA_VERSION="${CURRENT_VERSION}-beta.${TIMESTAMP}"
+          bun pm version $BETA_VERSION
+          
+          # Create a tag for this beta release
           cd ../..
+          git tag "v${BETA_VERSION}"
+          git push origin "v${BETA_VERSION}"
+
+      - name: Publish to npm (beta)
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
           
           # Publish create-docsfly-app
           cd packages/create-docsfly-app
