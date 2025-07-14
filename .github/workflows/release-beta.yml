@@ -41,6 +41,22 @@ jobs:
       - name: Build packages
         run: bun run build
 
+      - name: Bump version to beta
+        run: |
+          # Get current timestamp for beta version
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          
+          # Bump create-docsfly-app package
+          cd packages/create-docsfly-app
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          BETA_VERSION="${CURRENT_VERSION}-beta.${TIMESTAMP}"
+          bun pm version $BETA_VERSION
+          
+          # Create a tag for this beta release
+          cd ../..
+          git tag "v${BETA_VERSION}"
+          git push origin "v${BETA_VERSION}"
+
       - name: Publish to npm (beta)
         run: |
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
