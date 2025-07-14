@@ -1,14 +1,47 @@
 // Export types
-export type { DocsflyConfig, DocMeta, Doc, DocNavItem } from './types';
+export type { DocsflyConfig, DocMeta, Doc, DocNavItem, BlogPost, BlogMeta } from './types';
 
 // Export configuration utilities
 export { loadConfig, getConfig } from './config';
 
 // Export documentation utilities
-export { getAllDocs, getDocBySlug, generateNavigation, initializeHotReload, getHotReloadInstance, stopHotReload } from './docs';
+export { 
+  getAllDocs, 
+  getDocBySlug, 
+  generateNavigation, 
+  getPrevNextDocs,
+  initializeHotReload, 
+  getHotReloadInstance, 
+  stopHotReload,
+  // Blog functions
+  getAllBlogPosts,
+  getBlogPostBySlug,
+  getBlogPostsByTag,
+  getBlogTags,
+  // Version functions
+  getAllDocsForVersion,
+  getDocBySlugAndVersion,
+  generateNavigationForVersion
+} from './docs';
 
 // Export components
-export { Sidebar, DocsListing, DocsLayout, DocsPage, MainLayout, Search, NavigationItem, Header } from './components';
+export { 
+  Sidebar, 
+  DocsListing, 
+  DocsLayout, 
+  DocsPage, 
+  PrevNext,
+  MainLayout, 
+  Search, 
+  NavigationItem, 
+  Header,
+  // Blog components
+  BlogLayout,
+  BlogPostComponent,
+  BlogListing,
+  // Version components
+  VersionSelector
+} from './components';
 
 // Export hot reload utilities
 export { DocsflyHotReload, hotReloadCache } from './hot-reload/reload';

@@ -139,8 +139,6 @@ export async function createApp(
     options.template
   );
 
-  console.log(templatePath);
-
   // Check if template exists
   if (!fs.existsSync(templatePath)) {
     console.log(chalk.red(`✖ Template "${options.template}" does not exist`));

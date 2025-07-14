@@ -2,10 +2,24 @@
 
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export function HotReloader() {
   const router = useRouter();
+  const pathname = usePathname();
   const eventSourceRef = useRef<EventSource | null>(null);
+
+  // Restore scroll position on page load
+  useEffect(() => {
+    const savedPosition = sessionStorage.getItem(`scroll-${pathname}`);
+    if (savedPosition) {
+      const position = parseInt(savedPosition, 10);
+      setTimeout(() => {
+        window.scrollTo(0, position);
+        sessionStorage.removeItem(`scroll-${pathname}`);
+      }, 50);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (process.env.NODE_ENV !== 'development') {
@@ -19,8 +33,12 @@ export function HotReloader() {
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === 'connected') {
-        } else if (data.type === 'docs-changed') {
+        if (data.type === 'docs-changed') {
+          // Save current scroll position to sessionStorage
+          const scrollPosition = window.scrollY;
+          sessionStorage.setItem(`scroll-${pathname}`, scrollPosition.toString());
+          
+          // Refresh the page
           router.refresh();
         }
       } catch (error) {
@@ -37,7 +55,7 @@ export function HotReloader() {
         eventSourceRef.current.close();
       }
     };
-  }, [router]);
+  }, [router, pathname]);
 
   return null;
 }

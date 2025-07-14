@@ -15,6 +15,47 @@ const config: DocsflyConfig = {
       autoSort: true,
     },
   },
+  // Version functionality
+  versions: {
+    enabled: true,
+    defaultVersion: 'v2',
+    versions: [
+      {
+        name: 'v2',
+        label: 'v2.0 (Latest)',
+        dir: 'docs',
+        isDefault: true,
+      },
+      {
+        name: 'v1',
+        label: 'v1.x',
+        dir: 'docs-v1',
+      },
+    ],
+  },
+  // Blog functionality
+  blog: {
+    enabled: true,
+    dir: 'blog',
+    baseUrl: '/blog',
+    title: 'Docsfly Blog',
+    description: 'Latest updates, tutorials, and announcements',
+    postsPerPage: 10,
+    authors: {
+      'team': {
+        name: 'Docsfly Team',
+        title: 'Core Team',
+        url: 'https://docsfly.dev',
+        image_url: '/avatar-team.png',
+      },
+      'john': {
+        name: 'John Doe',
+        title: 'Developer',
+        url: 'https://github.com/johndoe',
+        image_url: '/avatar-john.png',
+      },
+    },
+  },
   theme: {
     defaultTheme: 'light',
     toggleEnabled: true,
@@ -32,6 +73,10 @@ const config: DocsflyConfig = {
       {
         text: 'Documentation',
         href: '/docs',
+      },
+      {
+        text: 'Blog',
+        href: '/blog',
       },
       {
         text: 'GitHub',

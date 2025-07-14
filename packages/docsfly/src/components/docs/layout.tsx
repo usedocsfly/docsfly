@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
-import { DocNavItem } from "../types";
-import { Sidebar } from "./sidebar";
-import { getConfig } from "../config";
-import { HotReloader } from "../hot-reload/reloader";
+import { DocNavItem } from "../../types";
+import { Sidebar } from "../sidebar";
+import { getConfig } from "../../config";
+import { HotReloader } from "../../hot-reload/reloader";
+
 interface DocsLayoutProps {
   children: ReactNode;
   navigation: DocNavItem[];
@@ -26,7 +27,7 @@ export function DocsLayout({
         } gap-24 mx-auto w-full h-full`}
       >
         <HotReloader />
-        <Sidebar navigation={navigation} />
+        <Sidebar navigation={navigation} className="hidden md:block" />
         <div className="flex-1 overflow-y-auto">{children}</div>
       </div>
     </div>

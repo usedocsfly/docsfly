@@ -25,56 +25,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for changes in docsfly package
-        id: changes
-        run: |
-          # Get the latest stable tag (exclude beta tags)
-          LATEST_TAG=$(git tag -l "v*" --sort=-version:refname | grep -v "beta" | head -n 1)
-          
-          if [ -z "$LATEST_TAG" ]; then
-            echo "No previous stable tag found, will publish"
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "Latest tag: $LATEST_TAG"
-            # Check if there are changes in packages/docsfly since the last tag
-            CHANGES=$(git diff --name-only $LATEST_TAG HEAD -- packages/docsfly/)
-            if [ -n "$CHANGES" ]; then
-              echo "Changes detected in packages/docsfly:"
-              echo "$CHANGES"
-              echo "changed=true" >> $GITHUB_OUTPUT
-            else
-              echo "No changes in packages/docsfly since $LATEST_TAG"
-              echo "changed=false" >> $GITHUB_OUTPUT
-            fi
-          fi
-
       - name: Extract version from tag
-        if: steps.changes.outputs.changed == 'true'
         id: version
         run: |
           TAG_VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
 
       - name: Setup Bun
-        if: steps.changes.outputs.changed == 'true'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies
-        if: steps.changes.outputs.changed == 'true'
         run: bun install
 
       - name: Run tests
-        if: steps.changes.outputs.changed == 'true'
         run: bun run test
 
       - name: Build packages
-        if: steps.changes.outputs.changed == 'true'
         run: bun run build
 
       - name: Publish to npm (stable)
-        if: steps.changes.outputs.changed == 'true'
         run: |
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
           
@@ -85,7 +56,6 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
-        if: steps.changes.outputs.changed == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -117,56 +87,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for changes in create-docsfly-app package
-        id: changes
-        run: |
-          # Get the latest stable tag (exclude beta tags)
-          LATEST_TAG=$(git tag -l "v*" --sort=-version:refname | grep -v "beta" | head -n 1)
-          
-          if [ -z "$LATEST_TAG" ]; then
-            echo "No previous stable tag found, will publish"
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "Latest tag: $LATEST_TAG"
-            # Check if there are changes in packages/create-docsfly-app since the last tag
-            CHANGES=$(git diff --name-only $LATEST_TAG HEAD -- packages/create-docsfly-app/)
-            if [ -n "$CHANGES" ]; then
-              echo "Changes detected in packages/create-docsfly-app:"
-              echo "$CHANGES"
-              echo "changed=true" >> $GITHUB_OUTPUT
-            else
-              echo "No changes in packages/create-docsfly-app since $LATEST_TAG"
-              echo "changed=false" >> $GITHUB_OUTPUT
-            fi
-          fi
-
       - name: Extract version from tag
-        if: steps.changes.outputs.changed == 'true'
         id: version
         run: |
           TAG_VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
 
       - name: Setup Bun
-        if: steps.changes.outputs.changed == 'true'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies
-        if: steps.changes.outputs.changed == 'true'
         run: bun install
 
       - name: Run tests
-        if: steps.changes.outputs.changed == 'true'
         run: bun run test
 
       - name: Build packages
-        if: steps.changes.outputs.changed == 'true'
         run: bun run build
 
       - name: Publish to npm (stable)
-        if: steps.changes.outputs.changed == 'true'
         run: |
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
           
@@ -177,7 +118,6 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
-        if: steps.changes.outputs.changed == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-import { DocsflyConfig } from './types';
+import { DocsflyConfig } from "./types";
 
 let config: DocsflyConfig | null = null;
 
@@ -8,36 +8,44 @@ export function loadConfig(): DocsflyConfig {
   }
 
   // Client-side: always use defaults
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     config = getDefaultConfig();
     return config;
   }
 
   // Server-side: try to load config file
   try {
-    const path = require('path');
-    const fs = require('fs');
-    
-    const configPath = path.join(process.cwd(), 'docsfly.config.ts');
-    
+    const fs = require("fs");
+    const path = require("path");
+
+    const configPath = path.join("docsfly.config.ts");
+
     if (fs.existsSync(configPath)) {
-      // For server-side, we need to handle this synchronously or differently
-      // For now, just use defaults
-      config = getDefaultConfig();
+      try {
+        import(configPath).then((mod) => {
+          const userConfig = mod.default || mod;
+          config = mergeWithDefaults(userConfig);
+          return config;
+        });
+      } catch (error) {
+        console.warn("Error loading docsfly.config.ts:", error);
+      }
     } else {
       config = getDefaultConfig();
+      return config;
     }
   } catch (error) {
-    console.warn('Error loading docsfly.config.ts:', error);
+    console.warn("Error loading docsfly.config.ts:", error);
     config = getDefaultConfig();
+    return config;
   }
 
-  return config;
+  return config || getDefaultConfig();
 }
 
 function mergeWithDefaults(userConfig: Partial<DocsflyConfig>): DocsflyConfig {
   const defaults = getDefaultConfig();
-  
+
   return {
     ...defaults,
     ...userConfig,
@@ -53,6 +61,18 @@ function mergeWithDefaults(userConfig: Partial<DocsflyConfig>): DocsflyConfig {
         ...userConfig.docs?.sidebar,
       },
     },
+    versions: userConfig.versions
+      ? {
+          ...defaults.versions,
+          ...userConfig.versions,
+        }
+      : defaults.versions,
+    blog: userConfig.blog
+      ? {
+          ...defaults.blog,
+          ...userConfig.blog,
+        }
+      : defaults.blog,
     theme: {
       ...defaults.theme,
       ...userConfig.theme,
@@ -83,45 +103,62 @@ function mergeWithDefaults(userConfig: Partial<DocsflyConfig>): DocsflyConfig {
 function getDefaultConfig(): DocsflyConfig {
   return {
     site: {
-      name: 'Documentation',
-      description: 'Documentation site built with Docsfly',
+      name: "Documentation",
+      description: "Documentation site built with Docsfly",
     },
     docs: {
-      dir: 'docs',
-      baseUrl: '/docs',
+      dir: "docs",
+      baseUrl: "/docs",
       compact: false,
       sidebar: {
-        title: 'Documentation',
+        title: "Documentation",
         collapsible: true,
         autoSort: true,
       },
     },
+    versions: {
+      enabled: false,
+      versions: [],
+    },
+    blog: {
+      enabled: false,
+      dir: "blog",
+      baseUrl: "/blog",
+      title: "Blog",
+      description: "Latest updates and announcements",
+      postsPerPage: 10,
+      authors: {},
+    },
     header: {
-      title: 'Docsfly',
+      title: "Docsfly",
       navigation: [
         {
-          label: 'Home',
-          href: '/',
+          label: "Home",
+          href: "/",
         },
         {
-          label: 'GitHub',
-          href: 'https://github.com/docsflyapp/docsfly',
-        }
+          label: "Documentation",
+          href: "/docs",
+        },
+        {
+          label: "GitHub",
+          href: "https://github.com/docsflyapp/docsfly",
+        },
       ],
-      showSearch: true
+      showSearch: true,
     },
     theme: {
-      defaultTheme: 'light',
+      defaultTheme: "light",
       toggleEnabled: true,
       colors: {
-        primary: 'oklch(0.45 0.3 260)',
-        secondary: 'oklch(0.9 0.02 260)',
+        primary: "oklch(0.45 0.3 260)",
+        secondary: "oklch(0.9 0.02 260)",
       },
     },
     navigation: {
       logo: {
-        text: 'Docs',
-        href: '/',
+        text: "Docs",
+        href: "/",
       },
       links: [],
     },

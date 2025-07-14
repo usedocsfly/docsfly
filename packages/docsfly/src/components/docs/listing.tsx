@@ -1,8 +1,6 @@
-'use client';
-
 import React from 'react';
-import { Doc } from '../types';
-import { getConfig } from '../config';
+import { Doc } from '../../types';
+import { getConfig } from '../../config';
 import Link from 'next/link'; // Ensure this is imported correctly
 
 interface DocsListingProps {

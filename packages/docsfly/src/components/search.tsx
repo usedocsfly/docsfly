@@ -1,37 +1,53 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Doc } from '../types';
-import { getConfig } from '../config';
-import Link from 'next/link'; // Ensure this is imported correctly
+import React, { useState, useEffect } from "react";
+import { Doc, DocsflyConfig } from "../types";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface SearchProps {
   docs: Doc[];
+  config: DocsflyConfig;
   onSelect?: (doc: Doc) => void;
   placeholder?: string;
   className?: string;
 }
 
-export function Search({ 
-  docs, 
-  onSelect, 
-  placeholder = 'Search documentation...', 
-  className = '' 
+export function Search({
+  docs,
+  config,
+  onSelect,
+  placeholder = "Search documentation...",
+  className = "",
 }: SearchProps) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [filteredDocs, setFilteredDocs] = useState<Doc[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const config = getConfig();
+  const router = useRouter();
 
   useEffect(() => {
     if (query.length > 0) {
-      const filtered = docs.filter(doc =>
-        doc.meta.title.toLowerCase().includes(query.toLowerCase()) ||
-        doc.meta.description?.toLowerCase().includes(query.toLowerCase()) ||
-        doc.meta.tags?.some(tag => tag.toLowerCase().includes(query.toLowerCase())) ||
-        doc.content.toLowerCase().includes(query.toLowerCase())
+      const filtered = docs.filter(
+        (doc) =>
+          doc.meta.title.toLowerCase().includes(query.toLowerCase()) ||
+          doc.meta.description?.toLowerCase().includes(query.toLowerCase()) ||
+          doc.meta.tags?.some((tag) =>
+            tag.toLowerCase().includes(query.toLowerCase())
+          ) ||
+          (doc.content && typeof doc.content === 'string' && 
+           (doc.content as any).toLowerCase().includes(query.toLowerCase()))
       );
-      setFilteredDocs(filtered);
+      // Sort filtered results with title matches first
+      const sorted = filtered.sort((a, b) => {
+        const aHasTitle = a.meta.title.toLowerCase().includes(query.toLowerCase());
+        const bHasTitle = b.meta.title.toLowerCase().includes(query.toLowerCase());
+        
+        if (aHasTitle && !bHasTitle) return -1;
+        if (!aHasTitle && bHasTitle) return 1;
+        return 0;
+      });
+      
+      setFilteredDocs(sorted);
       setIsOpen(true);
     } else {
       setFilteredDocs([]);
@@ -40,29 +56,42 @@ export function Search({
   }, [query, docs]);
 
   const handleSelect = (doc: Doc) => {
-    setQuery('');
+    setQuery("");
     setIsOpen(false);
     onSelect?.(doc);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && filteredDocs.length > 0) {
+      // Navigate to the best match (first in sorted list, prioritizing title matches)
+      const bestMatch = filteredDocs[0];
+      const href = `${config.docs.baseUrl || "/docs"}/${bestMatch.slug}`;
+      router.push(href);
+      handleSelect(bestMatch);
+    }
+  };
+
   return (
     <div className={`relative ${className}`}>
-      <div className="relative">
+      <div className="flex items-center p-1 border rounded-md bg-background">
+        <SearchIcon className="w-4 h-4 ml-2 text-muted-foreground" />
+
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
+          onKeyDown={handleKeyDown}
+          className="flex-1 px-2 py-1 text-sm bg-transparent outline-none"
           placeholder={placeholder}
-          className="w-full px-4 py-2 pl-10 pr-4 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />
-        <SearchIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
       </div>
-      
+
       {isOpen && filteredDocs.length > 0 && (
         <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-96 overflow-y-auto">
           {filteredDocs.map((doc) => (
             <SearchResult
               key={doc.slug}
+              config={config}
               doc={doc}
               query={query}
               onSelect={() => handleSelect(doc)}
@@ -76,28 +105,33 @@ export function Search({
 
 interface SearchResultProps {
   doc: Doc;
+  config: DocsflyConfig;
   query: string;
   onSelect: () => void;
 }
 
-function SearchResult({ doc, query, onSelect }: SearchResultProps) {
-  const config = getConfig();
-
-  const href = `${config.docs.baseUrl || '/docs'}/${doc.slug}`;
+function SearchResult({ doc, config, query, onSelect }: SearchResultProps) {
+  const href = `${config.docs.baseUrl || "/docs"}/${doc.slug}`;
 
   const highlightMatch = (text: string) => {
     if (!query) return text;
-    const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<mark>$1</mark>');
+    const regex = new RegExp(`(${query})`, "gi");
+    return text.replace(regex, "<mark>$1</mark>");
   };
 
   const ResultContent = () => (
     <div className="px-4 py-3 hover:bg-accent cursor-pointer">
-      <div className="font-medium text-sm" 
-           dangerouslySetInnerHTML={{ __html: highlightMatch(doc.meta.title) }} />
+      <div
+        className="font-medium text-sm"
+        dangerouslySetInnerHTML={{ __html: highlightMatch(doc.meta.title) }}
+      />
       {doc.meta.description && (
-        <div className="text-xs text-muted-foreground mt-1"
-             dangerouslySetInnerHTML={{ __html: highlightMatch(doc.meta.description) }} />
+        <div
+          className="text-xs text-muted-foreground mt-1"
+          dangerouslySetInnerHTML={{
+            __html: highlightMatch(doc.meta.description),
+          }}
+        />
       )}
       {doc.meta.tags && doc.meta.tags.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">

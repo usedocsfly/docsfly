@@ -1,3 +1,5 @@
+import type { SerializeResult } from 'next-mdx-remote-client/serialize';
+
 export interface DocsflyConfig {
   site: {
     name: string;
@@ -14,6 +16,30 @@ export interface DocsflyConfig {
       collapsible?: boolean;
       autoSort?: boolean;
     };
+  };
+  versions?: {
+    enabled: boolean;
+    defaultVersion?: string;
+    versions: Array<{
+      name: string;
+      label: string;
+      dir: string;
+      isDefault?: boolean;
+    }>;
+  };
+  blog?: {
+    enabled: boolean;
+    dir: string;
+    baseUrl?: string;
+    title?: string;
+    description?: string;
+    postsPerPage?: number;
+    authors?: Record<string, {
+      name: string;
+      title?: string;
+      url?: string;
+      image_url?: string;
+    }>;
   };
   header?: {
     title?: string;
@@ -67,11 +93,31 @@ export interface DocMeta {
   updatedAt?: string;
 }
 
+export interface BlogMeta {
+  title: string;
+  description?: string;
+  author?: string;
+  date: string;
+  tags?: string[];
+  draft?: boolean;
+  featured?: boolean;
+  image?: string;
+}
+
 export interface Doc {
   slug: string;
   meta: DocMeta;
-  content: string;
+  content: SerializeResult;
   path: string;
+  version?: string;
+}
+
+export interface BlogPost {
+  slug: string;
+  meta: BlogMeta;
+  content: SerializeResult;
+  path: string;
+  excerpt?: string;
 }
 
 export interface DocNavItem {
