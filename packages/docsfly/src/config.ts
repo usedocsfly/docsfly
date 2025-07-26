@@ -213,7 +213,7 @@ function getDefaultConfig(): DocsflyConfig {
         },
         {
           label: "GitHub",
-          href: "https://github.com/docsflyapp/docsfly",
+          href: "https://github.com/usedocsfly/docsfly",
         },
       ],
       showSearch: true,

@@ -124,7 +124,7 @@ Currently available templates:
 
 ## Contributing
 
-See the main [Docsfly repository](https://github.com/docsflyapp/docsfly) for contribution guidelines.
+See the main [Docsfly repository](https://github.com/usedocsfly/docsfly) for contribution guidelines.
 
 ## License
 

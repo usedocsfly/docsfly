@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/docsflyapp/docsfly.git",
+    "url": "git+https://github.com/usedocsfly/docsfly.git",
     "directory": "packages/create-docsfly-app"
   },
   "target": "node",

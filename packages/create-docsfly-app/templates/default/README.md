@@ -1,6 +1,6 @@
 # My Docsfly App
 
-A documentation website built with [Docsfly](https://github.com/docsflyapp/docsfly).
+A documentation website built with [Docsfly](https://github.com/usedocsfly/docsfly).
 
 ## Getting Started
 
@@ -53,6 +53,6 @@ Check out the [deployment documentation](https://nextjs.org/docs/deployment) for
 
 ## Learn More
 
-- [Docsfly Documentation](https://docsfly.dev)
+- [Docsfly Documentation](https://docsfly.rai.bio)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [MDX Documentation](https://mdxjs.com/)

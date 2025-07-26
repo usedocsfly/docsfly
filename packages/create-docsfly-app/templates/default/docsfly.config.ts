@@ -16,7 +16,7 @@ const config: DocsflyConfig = {
     links: [
       {
         text: 'GitHub',
-        href: 'https://github.com/docsflyapp/docsfly',
+        href: 'https://github.com/usedocsfly/docsfly',
         external: true,
       },
     ],

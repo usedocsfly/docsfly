@@ -1,6 +1,6 @@
 # Docsfly
 
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/docsflyapp/docsfly?utm_source=oss&utm_medium=github&utm_campaign=docsflyapp%2Fdocsfly&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/usedocsfly/docsfly?utm_source=oss&utm_medium=github&utm_campaign=usedocsfly%2Fdocsfly&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 A modern documentation framework built with Next.js 15, MDX, and Tailwind CSS.
 

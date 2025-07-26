@@ -4,7 +4,7 @@ const config: DocsflyConfig = {
   site: {
     name: 'Docsfly',
     description: 'Beautiful documentation made simple',
-    url: 'https://docsfly.dev',
+    url: 'https://docsfly.rai.bio',
   },
   docs: {
     dir: 'docs',
@@ -45,7 +45,7 @@ const config: DocsflyConfig = {
       'team': {
         name: 'Docsfly Team',
         title: 'Core Team',
-        url: 'https://docsfly.dev',
+        url: 'https://docsfly.rai.bio',
         image_url: '/avatar-team.png',
       },
       'john': {
@@ -80,7 +80,7 @@ const config: DocsflyConfig = {
       },
       {
         text: 'GitHub',
-        href: 'https://github.com/docsflyapp/docsfly',
+        href: 'https://github.com/usedocsfly/docsfly',
         external: true,
       },
     ],
