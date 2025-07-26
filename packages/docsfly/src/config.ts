@@ -62,7 +62,9 @@ export function loadConfig(): DocsflyConfig {
                 
                 eval(moduleCode)(moduleObj, moduleObj.exports, require);
                 const configExport = (moduleObj.exports as any).default || moduleObj.exports;
+                console.log("original", configExport);
                 config = mergeWithDefaults(configExport);
+                console.log("config" ,config)
                 return config;
               } catch (transpileError) {
                 console.warn(`Failed to load TypeScript config ${configPath}:`, transpileError);
