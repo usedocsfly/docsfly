@@ -22,11 +22,9 @@ export function loadConfig(): DocsflyConfig {
 
     if (fs.existsSync(configPath)) {
       try {
-        import(configPath).then((mod) => {
-          const userConfig = mod.default || mod;
-          config = mergeWithDefaults(userConfig);
-          return config;
-        });
+        const userConfig = require(configPath);
+        config = mergeWithDefaults(userConfig);
+        return config;
       } catch (error) {
         console.warn("Error loading docsfly.config.ts:", error);
       }
