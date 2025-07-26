@@ -45,6 +45,7 @@ export function loadConfig(): DocsflyConfig {
               });
 
               const userConfig = eval(result.outputText);
+              console.log(userConfig);
               config = mergeWithDefaults(userConfig);
               return config;
             } catch (e) {
