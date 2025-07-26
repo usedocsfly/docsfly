@@ -28,31 +28,50 @@ export function loadConfig(): DocsflyConfig {
     for (const configPath of configPaths) {
       if (fs.existsSync(configPath)) {
         try {
-          // For TypeScript files, we need to handle compilation
+          // For TypeScript files, try to require directly first (works if ts-node is available)
           if (configPath.endsWith('.ts')) {
-            // Try to use ts-node or similar if available
             try {
-              const tsConfig = {
-                module: 'CommonJS',
-                target: 'ES2020',
-                moduleResolution: 'node',
-                allowJs: true,
-                noEmit: true,
-              };
-
-              const result = ts.transpileModule(fs.readFileSync(configPath, 'utf8'), {
-                compilerOptions: tsConfig,
-              });
-
-              const userConfig = JSON.parse(eval(result.outputText));
-              config = mergeWithDefaults(userConfig);
+              // First try direct require (works with ts-node)
+              const userConfig = require(path.resolve(configPath));
+              const configExport = userConfig.default || userConfig;
+              config = mergeWithDefaults(configExport);
               return config;
-            } catch (e) {
-              // ts-node not available, skip this file
-              continue;
+            } catch (requireError) {
+              // If direct require fails, try transpilation
+              try {
+                const tsConfig = {
+                  module: ts.ModuleKind.CommonJS,
+                  target: ts.ScriptTarget.ES2020,
+                  moduleResolution: ts.ModuleResolutionKind.NodeJs,
+                  allowJs: true,
+                  esModuleInterop: true,
+                  allowSyntheticDefaultImports: true,
+                };
+
+                const result = ts.transpileModule(fs.readFileSync(configPath, 'utf8'), {
+                  compilerOptions: tsConfig,
+                });
+
+                // Create a temporary module context to evaluate the transpiled code
+                const moduleObj = { exports: {} as any };
+                const moduleCode = `
+                  (function(module, exports, require) {
+                    ${result.outputText}
+                  })
+                `;
+                
+                eval(moduleCode)(moduleObj, moduleObj.exports, require);
+                const configExport = (moduleObj.exports as any).default || moduleObj.exports;
+                config = mergeWithDefaults(configExport);
+                return config;
+              } catch (transpileError) {
+                console.warn(`Failed to load TypeScript config ${configPath}:`, transpileError);
+                continue;
+              }
             }
           }
           
+          // For JavaScript files
           const userConfig = require(path.resolve(configPath));
           const configExport = userConfig.default || userConfig;
           config = mergeWithDefaults(configExport);
@@ -71,8 +90,6 @@ export function loadConfig(): DocsflyConfig {
     config = getDefaultConfig();
     return config;
   }
-
-  return config || getDefaultConfig();
 }
 
 function mergeWithDefaults(userConfig: Partial<DocsflyConfig>): DocsflyConfig {
