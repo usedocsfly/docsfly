@@ -1,13 +1,12 @@
 {
   "name": "docsfly",
   "version": "1.0.0",
+  "devDependencies": {
+    "turbo": "^2.5.4"
+  },
   "description": "Docsfly documentation framework monorepo",
+  "packageManager": "bun@1.0.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "!packages/create-docsfly-app/templates/*"
-  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -15,11 +14,9 @@
     "test": "turbo run test",
     "clean": "turbo run clean"
   },
-  "devDependencies": {
-    "turbo": "^2.5.4"
-  },
-  "packageManager": "bun@1.0.0",
-  "dependencies": {
-    "ts-node": "^10.9.2"
-  }
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "!packages/create-docsfly-app/templates/*"
+  ]
 }

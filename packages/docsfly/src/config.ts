@@ -17,6 +17,7 @@ export function loadConfig(): DocsflyConfig {
   try {
     const fs = require("fs");
     const path = require("path");
+    const ts = require('typescript');
 
     // Try both .ts and .js extensions
     const configPaths = [
@@ -31,7 +32,21 @@ export function loadConfig(): DocsflyConfig {
           if (configPath.endsWith('.ts')) {
             // Try to use ts-node or similar if available
             try {
-              require('ts-node/register');
+              const tsConfig = {
+                module: 'CommonJS',
+                target: 'ES2020',
+                moduleResolution: 'node',
+                allowJs: true,
+                noEmit: true,
+              };
+
+              const result = ts.transpileModule(fs.readFileSync(configPath, 'utf8'), {
+                compilerOptions: tsConfig,
+              });
+
+              const userConfig = eval(result.outputText);
+              config = mergeWithDefaults(userConfig);
+              return config;
             } catch (e) {
               // ts-node not available, skip this file
               continue;
