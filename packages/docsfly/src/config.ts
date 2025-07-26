@@ -2,9 +2,31 @@ import { DocsflyConfig } from "./types";
 
 let config: DocsflyConfig | null = null;
 
-export function loadConfig(): DocsflyConfig {
-  if (config) {
+export function clearConfigCache(): void {
+  config = null;
+  // Clear require cache for config files to enable hot reload
+  if (typeof require !== 'undefined' && require.cache) {
+    const path = require('path');
+    const configPaths = [
+      path.resolve(process.cwd(), "docsfly.config.js"),
+      path.resolve(process.cwd(), "docsfly.config.ts"),
+    ];
+    
+    configPaths.forEach(configPath => {
+      if (require.cache[configPath]) {
+        delete require.cache[configPath];
+      }
+    });
+  }
+}
+
+export function loadConfig(forceReload: boolean = false): DocsflyConfig {
+  if (config && !forceReload) {
     return config;
+  }
+  
+  if (forceReload) {
+    clearConfigCache();
   }
 
   // Client-side: always use defaults
@@ -62,9 +84,7 @@ export function loadConfig(): DocsflyConfig {
                 
                 eval(moduleCode)(moduleObj, moduleObj.exports, require);
                 const configExport = (moduleObj.exports as any).default || moduleObj.exports;
-                console.log("original", configExport);
                 config = mergeWithDefaults(configExport);
-                console.log("config" ,config)
                 return config;
               } catch (transpileError) {
                 console.warn(`Failed to load TypeScript config ${configPath}:`, transpileError);
@@ -224,6 +244,8 @@ function getDefaultConfig(): DocsflyConfig {
   };
 }
 
-export function getConfig(): DocsflyConfig {
-  return loadConfig();
+export function getConfig(forceReload: boolean = false): DocsflyConfig {
+  // In development mode, always reload to enable hot reload
+  const isDev = process.env.NODE_ENV === 'development';
+  return loadConfig(forceReload || isDev);
 }
