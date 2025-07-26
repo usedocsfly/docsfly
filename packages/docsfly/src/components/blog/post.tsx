@@ -1,7 +1,6 @@
 "use client";
 
-import { BlogPost } from "../../types";
-import { getConfig } from "../../config";
+import { BlogPost, DocsflyConfig } from "../../types";
 import { cn } from "../ui/utils";
 import { Button } from "../ui/button";
 import Link from "next/link";
@@ -9,12 +8,11 @@ import { Markdown } from "../markdown";
 
 interface BlogPostProps {
   post: BlogPost;
+  config: DocsflyConfig;
   isExcerpt?: boolean;
 }
 
-export function BlogPostComponent({ post, isExcerpt = false }: BlogPostProps) {
-  const config = getConfig();
-
+export function BlogPostComponent({ post, config, isExcerpt = false }: BlogPostProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {

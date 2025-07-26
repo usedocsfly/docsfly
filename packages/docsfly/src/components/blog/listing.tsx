@@ -1,6 +1,6 @@
 'use client';
 
-import { BlogPost } from '../../types';
+import { BlogPost, DocsflyConfig } from '../../types';
 import { BlogPostComponent } from './post';
 
 interface BlogListingProps {
@@ -8,13 +8,15 @@ interface BlogListingProps {
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
+  config: DocsflyConfig;
 }
 
 export function BlogListing({ 
   posts, 
   currentPage = 1, 
   totalPages = 1, 
-  onPageChange 
+  onPageChange,
+  config
 }: BlogListingProps) {
   
   const Pagination = () => {
@@ -64,7 +66,7 @@ export function BlogListing({
       <div className="space-y-12">
         {posts.map((post) => (
           <div key={post.slug} className="border-b pb-12 last:border-b-0">
-            <BlogPostComponent post={post} isExcerpt />
+            <BlogPostComponent post={post} config={config} isExcerpt />
           </div>
         ))}
       </div>

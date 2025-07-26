@@ -11,6 +11,7 @@ export async function BlogMain({
 }) {
   // Await the params to ensure they are resolved before passing to DocsPage
   const params = await _params;
+  const config = getConfig();
 
   const BlogLister = async () => {
     const posts = await getAllBlogPosts();
@@ -25,7 +26,7 @@ export async function BlogMain({
             {config.blog?.description || "Latest updates and articles"}
           </p>
         </header>
-        <BlogListing posts={posts} />
+        <BlogListing posts={posts} config={config} />
       </div>
     );
   };
@@ -44,5 +45,5 @@ export async function BlogMain({
     return <BlogLister />;
   }
 
-  return <BlogPostComponent post={post} />;
+  return <BlogPostComponent post={post} config={config} />;
 }
