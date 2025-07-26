@@ -18,22 +18,41 @@ export function loadConfig(): DocsflyConfig {
     const fs = require("fs");
     const path = require("path");
 
-    const configPath = path.join("docsfly.config.ts");
+    // Try both .ts and .js extensions
+    const configPaths = [
+      path.join("docsfly.config.js"),
+      path.join("docsfly.config.ts")
+    ];
 
-    if (fs.existsSync(configPath)) {
-      try {
-        const userConfig = require(configPath);
-        config = mergeWithDefaults(userConfig);
-        return config;
-      } catch (error) {
-        console.warn("Error loading docsfly.config.ts:", error);
+    for (const configPath of configPaths) {
+      if (fs.existsSync(configPath)) {
+        try {
+          // For TypeScript files, we need to handle compilation
+          if (configPath.endsWith('.ts')) {
+            // Try to use ts-node or similar if available
+            try {
+              require('ts-node/register');
+            } catch (e) {
+              // ts-node not available, skip this file
+              continue;
+            }
+          }
+          
+          const userConfig = require(path.resolve(configPath));
+          const configExport = userConfig.default || userConfig;
+          config = mergeWithDefaults(configExport);
+          return config;
+        } catch (error) {
+          console.warn(`Error loading ${configPath}:`, error);
+          continue;
+        }
       }
-    } else {
-      config = getDefaultConfig();
-      return config;
     }
+    
+    config = getDefaultConfig();
+    return config;
   } catch (error) {
-    console.warn("Error loading docsfly.config.ts:", error);
+    console.warn("Error loading docsfly.config:", error);
     config = getDefaultConfig();
     return config;
   }
