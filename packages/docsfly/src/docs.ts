@@ -15,6 +15,11 @@ import type {
 } from "./types";
 import remarkGfm from "remark-gfm";
 
+const isMonorepo = process.env.DOCSFLY_IS_MONOREPO === "true";
+const contentRootDir = isMonorepo
+  ? path.join(process.cwd(), "../../")
+  : process.cwd();
+
 // Hot reload functionality - no cache revalidation needed in development
 
 export async function mdxParse(source: string): Promise<SerializeResult> {
@@ -23,7 +28,7 @@ export async function mdxParse(source: string): Promise<SerializeResult> {
 
 export async function getAllDocs(): Promise<Doc[]> {
   const config = getConfig();
-  const docsDirectory = path.join(process.cwd(), config.docs.dir);
+  const docsDirectory = path.join(contentRootDir, config.docs.dir);
 
   try {
     const files = await getMarkdownFiles(docsDirectory);
@@ -99,7 +104,7 @@ export async function getAllDocs(): Promise<Doc[]> {
 
 export async function getDocBySlug(slug: string): Promise<Doc | null> {
   const config = getConfig();
-  const docsDirectory = path.join(process.cwd(), config.docs.dir);
+  const docsDirectory = path.join(contentRootDir, config.docs.dir);
 
   // In development mode, always bypass cache for fresh content
   if (process.env.NODE_ENV !== "development") {
@@ -315,7 +320,7 @@ async function loadCategoryConfigs(
   categoryConfigMap: Map<string, CategoryConfig>
 ): Promise<void> {
   const config = getConfig();
-  const docsDirectory = path.join(process.cwd(), config.docs.dir);
+  const docsDirectory = path.join(contentRootDir, config.docs.dir);
 
   // Recursively find all _category.json files
   const findCategoryFiles = async (
@@ -371,7 +376,7 @@ export function initializeHotReload(options?: {
     onDocChange: (filePath, event) => {
       const config = getConfig();
       const slug = path
-        .relative(path.join(process.cwd(), config.docs.dir), filePath)
+        .relative(path.join(contentRootDir, config.docs.dir), filePath)
         .replace(".mdx", "")
         .replace(/\\/g, "/");
 
@@ -394,7 +399,7 @@ export function initializeHotReload(options?: {
       if (!config.blog?.enabled) return;
 
       const slug = path
-        .relative(path.join(process.cwd(), config.blog.dir), filePath)
+        .relative(path.join(contentRootDir, config.blog.dir), filePath)
         .replace(".mdx", "")
         .replace(/\\/g, "/");
 
@@ -442,7 +447,7 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
     return [];
   }
 
-  const blogDirectory = path.join(process.cwd(), config.blog.dir);
+  const blogDirectory = path.join(contentRootDir, config.blog.dir);
 
   try {
     const files = await getMarkdownFiles(blogDirectory);
@@ -547,7 +552,7 @@ export async function getBlogPostBySlug(
     }
   }
 
-  const blogDirectory = path.join(process.cwd(), config.blog.dir);
+  const blogDirectory = path.join(contentRootDir, config.blog.dir);
   const filePath = path.join(blogDirectory, `${slug}.mdx`);
 
   try {
@@ -623,7 +628,7 @@ export async function getAllDocsForVersion(version: string): Promise<Doc[]> {
     return [];
   }
 
-  const docsDirectory = path.join(process.cwd(), versionConfig.dir);
+  const docsDirectory = path.join(contentRootDir, versionConfig.dir);
 
   try {
     const files = await getMarkdownFiles(docsDirectory);
@@ -684,7 +689,7 @@ export async function getDocBySlugAndVersion(
     return null;
   }
 
-  const docsDirectory = path.join(process.cwd(), versionConfig.dir);
+  const docsDirectory = path.join(contentRootDir, versionConfig.dir);
 
   const possiblePaths = [`${slug}.mdx`, `${slug}/index.mdx`];
 
@@ -837,7 +842,7 @@ async function loadCategoryConfigsForVersion(
   categoryConfigMap: Map<string, CategoryConfig>,
   versionDir: string
 ): Promise<void> {
-  const docsDirectory = path.join(process.cwd(), versionDir);
+  const docsDirectory = path.join(contentRootDir, versionDir);
 
   const findCategoryFiles = async (
     dir: string,

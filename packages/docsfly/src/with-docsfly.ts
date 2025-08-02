@@ -3,9 +3,13 @@ import path from "path";
 
 export function withDocsfly(
   nextConfig: NextConfig = {},
-  options?: { projectDir?: string; isMonorepo?: boolean, output?: "none" | "standalone" | "export" },
+  options?: {
+    projectDir?: string;
+    isMonorepo?: boolean;
+    output?: "none" | "standalone" | "export";
+  },
 ): NextConfig {
-  const { projectDir, isMonorepo, output = "none" } = options ?? {};
+  const { projectDir, isMonorepo, output = "standalone" } = options ?? {};
 
   const tracingRoot = projectDir
     ? isMonorepo
@@ -15,6 +19,10 @@ export function withDocsfly(
 
   return {
     ...nextConfig,
+    env: {
+      ...nextConfig.env,
+      DOCSFLY_IS_MONOREPO: String(!!isMonorepo),
+    },
     transpilePackages: ["docsfly"],
     output: output !== "none" ? output : undefined,
     outputFileTracingRoot: tracingRoot,
