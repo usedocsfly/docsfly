@@ -1,3 +1,5 @@
+"use client";
+
 import { MDXClient } from "next-mdx-remote-client";
 import type { SerializeResult } from "next-mdx-remote-client/serialize";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";

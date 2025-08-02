@@ -32,7 +32,7 @@ export function DocsPage({
     <article className={`max-w-none mb-8 px-4 ${className}`}>
       {title && (
         <header className="mb-8 pb-6 border-b border-border">
-          <h1 className="text-4xl font-bold mb-4 text-foreground">{title}</h1>
+          <h1 className="text-4xl font-bold mb-4 text-foreground tracking-tight">{title}</h1>
           {description && (
             <p className="text-xl text-muted-foreground mb-4 leading-relaxed">
               {description}
