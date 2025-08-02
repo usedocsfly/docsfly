@@ -3,21 +3,29 @@ import path from "path";
 
 export function withDocsfly(
   nextConfig: NextConfig = {},
-  projectDir?: string,
+  options?: { projectDir?: string; isMonorepo?: boolean },
 ): NextConfig {
-  const outputFileTracingRoot = projectDir
-    ? { outputFileTracingRoot: path.join(projectDir, "../../") }
-    : {
-        outputFileTracingIncludes: {
-          "/*": ["./docs/**/*", "./blog/**/*"],
-        },
-      };
+  let outputFileTracingOption = {};
+
+  if (options?.projectDir) {
+    const { projectDir, isMonorepo } = options;
+    const tracingRoot = isMonorepo
+      ? path.join(projectDir, "../../")
+      : projectDir;
+    outputFileTracingOption = { outputFileTracingRoot: tracingRoot };
+  } else {
+    outputFileTracingOption = {
+      outputFileTracingIncludes: {
+        "/*": ["./docs/**/*", "./blog/**/*"],
+      },
+    };
+  }
 
   return {
     ...nextConfig,
     transpilePackages: ["docsfly"],
     output: "standalone",
-    ...outputFileTracingRoot,
+    ...outputFileTracingOption,
     experimental: {
       ...nextConfig.experimental,
     },

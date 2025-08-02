@@ -12,4 +12,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withDocsfly(nextConfig);
+export default withDocsfly(nextConfig, { projectDir: __dirname });
