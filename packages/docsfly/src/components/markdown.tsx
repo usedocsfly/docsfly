@@ -148,7 +148,6 @@ export const markdownComponents = {
     // Code block with syntax highlighting
     // Only render ShikiHighlighter if running in the browser (not during static build)
     if (typeof window !== "undefined") {
-      const ShikiHighlighter = require("./shiki-highlighter").ShikiHighlighter;
       return (
         <div className="bg-secondary rounded-md">
           <ShikiHighlighter language={language} theme="slack-dark">
