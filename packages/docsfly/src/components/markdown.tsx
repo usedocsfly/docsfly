@@ -124,7 +124,7 @@ export const markdownComponents = {
           className="bg-muted py-0.5 px-1 rounded text-sm font-mono code-block"
           {...props}
         >
-          {children}
+          {children?.toString() ?? ""}
         </code>
       );
     }
@@ -133,7 +133,7 @@ export const markdownComponents = {
     return (
       <div className="bg-secondary rounded-md">
         <ShikiHighlighter language={language} theme="slack-dark">
-          {children as string}
+          {children?.toString() ?? ""}
         </ShikiHighlighter>
       </div>
     );

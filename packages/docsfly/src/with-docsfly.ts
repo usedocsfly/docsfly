@@ -5,27 +5,22 @@ export function withDocsfly(
   nextConfig: NextConfig = {},
   options?: { projectDir?: string; isMonorepo?: boolean },
 ): NextConfig {
-  let outputFileTracingOption = {};
+  const { projectDir, isMonorepo } = options ?? {};
 
-  if (options?.projectDir) {
-    const { projectDir, isMonorepo } = options;
-    const tracingRoot = isMonorepo
+  const tracingRoot = projectDir
+    ? isMonorepo
       ? path.join(projectDir, "../../")
-      : projectDir;
-    outputFileTracingOption = { outputFileTracingRoot: tracingRoot };
-  } else {
-    outputFileTracingOption = {
-      outputFileTracingIncludes: {
-        "/*": ["./docs/**/*", "./blog/**/*"],
-      },
-    };
-  }
+      : projectDir
+    : undefined;
 
   return {
     ...nextConfig,
     transpilePackages: ["docsfly"],
     output: "standalone",
-    ...outputFileTracingOption,
+    outputFileTracingRoot: tracingRoot,
+    outputFileTracingIncludes: {
+      "/*": ["./docs/**/*", "./blog/**/*"],
+    },
     experimental: {
       ...nextConfig.experimental,
     },
