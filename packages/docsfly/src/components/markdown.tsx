@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { AlertCircleIcon, Info } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
+import React from "react";
 
 export function DocsflyAlert({
   className,
@@ -105,11 +106,24 @@ export const markdownComponents = {
       {children}
     </p>
   ),
-  pre: ({ children, ...props }: { children?: React.ReactNode }) => (
-    <pre className="overflow-x-auto my-6 !p-0" {...props}>
-      {children}
-    </pre>
-  ),
+  pre: ({ children, ...props }: { children?: React.ReactNode }) => {
+    // If the only child is a <code> element, unwrap it for compatibility
+    if (
+      React.isValidElement(children) &&
+      (children as any).type === "code"
+    ) {
+      return (
+        <pre className="overflow-x-auto my-6 !p-0" {...props}>
+          {(children as any).props.children}
+        </pre>
+      );
+    }
+    return (
+      <pre className="overflow-x-auto my-6 !p-0" {...props}>
+        {children}
+      </pre>
+    );
+  },
   code: ({
     children,
     ...props
@@ -132,12 +146,25 @@ export const markdownComponents = {
     }
 
     // Code block with syntax highlighting
+    // Only render ShikiHighlighter if running in the browser (not during static build)
+    if (typeof window !== "undefined") {
+      const ShikiHighlighter = require("./shiki-highlighter").ShikiHighlighter;
+      return (
+        <div className="bg-secondary rounded-md">
+          <ShikiHighlighter language={language} theme="slack-dark">
+            {children?.toString() ?? ""}
+          </ShikiHighlighter>
+        </div>
+      );
+    }
+
+    // Fallback for SSR/static build: render plain <pre><code>
     return (
-      <div className="bg-secondary rounded-md">
-        <ShikiHighlighter language={language} theme="slack-dark">
+      <pre className="overflow-x-auto my-6 !p-0">
+        <code className={props.className}>
           {children?.toString() ?? ""}
-        </ShikiHighlighter>
-      </div>
+        </code>
+      </pre>
     );
   },
   ul: ({ children, ...props }: { children?: React.ReactNode }) => (

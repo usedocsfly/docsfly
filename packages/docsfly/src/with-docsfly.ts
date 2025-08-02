@@ -3,9 +3,9 @@ import path from "path";
 
 export function withDocsfly(
   nextConfig: NextConfig = {},
-  options?: { projectDir?: string; isMonorepo?: boolean },
+  options?: { projectDir?: string; isMonorepo?: boolean, output?: "none" | "standalone" | "export" },
 ): NextConfig {
-  const { projectDir, isMonorepo } = options ?? {};
+  const { projectDir, isMonorepo, output = "none" } = options ?? {};
 
   const tracingRoot = projectDir
     ? isMonorepo
@@ -16,7 +16,7 @@ export function withDocsfly(
   return {
     ...nextConfig,
     transpilePackages: ["docsfly"],
-    output: "standalone",
+    output: output !== "none" ? output : undefined,
     outputFileTracingRoot: tracingRoot,
     outputFileTracingIncludes: {
       "/*": ["./docs/**/*", "./blog/**/*"],
