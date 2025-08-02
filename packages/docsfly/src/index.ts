@@ -3,6 +3,7 @@ export type { DocsflyConfig, DocMeta, Doc, DocNavItem, BlogPost, BlogMeta } from
 
 // Export configuration utilities
 export { loadConfig, getConfig } from './config';
+export { withDocsfly } from './with-docsfly';
 
 // Export documentation utilities
 export { 

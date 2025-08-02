@@ -1,8 +1,7 @@
 import { NextConfig } from "next";
-import createMDX from '@next/mdx';
+import { withDocsfly } from "docsfly";
 
 const nextConfig: NextConfig = {
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   turbopack: {
     rules: {
       "*.svg": {
@@ -13,11 +12,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-const withMDX = createMDX({
-  options: {
-    remarkPlugins: [],
-    rehypePlugins: [],
-  },
-});
-
-export default withMDX(nextConfig);
+export default withDocsfly(nextConfig);
