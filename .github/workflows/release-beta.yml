@@ -39,7 +39,7 @@ jobs:
         run: bun run test
 
       - name: Build packages
-        run: bun run build
+        run: bun run build --filter=docsfly
 
       - name: Bump version to beta
         run: |
@@ -93,7 +93,7 @@ jobs:
         run: bun run test
 
       - name: Build packages
-        run: bun run build
+        run: bun run build --filter=create-docsfly-app
 
       - name: Bump version to beta
         run: |
