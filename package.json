@@ -2,7 +2,7 @@
   "name": "docsfly",
   "version": "1.0.0",
   "devDependencies": {
-    "turbo": "^2.5.4"
+    "turbo": "^2.5.6"
   },
   "description": "Docsfly documentation framework monorepo",
   "packageManager": "bun@1.0.0",

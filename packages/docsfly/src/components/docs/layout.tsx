@@ -3,19 +3,34 @@ import { DocNavItem } from "../../types";
 import { Sidebar } from "../sidebar";
 import { getConfig } from "../../config";
 import { HotReloader } from "../../hot-reload/reloader";
+import { generateNavigation } from "../../docs";
 
 interface DocsLayoutProps {
   children: ReactNode;
-  navigation: DocNavItem[];
+  navigation?: DocNavItem[];
   className?: string;
 }
 
-export function DocsLayout({
+/**
+ * The top-level component for a Docsfly documentation page.
+ *
+ * @param children The main content of the page.
+ * @param navigation Deprecated param - You don't need to provide this anymore.
+ * @param className Additional CSS classes to apply to the top-level element.
+ *
+ * @example
+ * <DocsLayout>
+ *   {children as any}
+ * </DocsLayout>
+ */
+export async function DocsLayout({
   children,
-  navigation,
+  navigation: _navigation, // For compatibility
   className = "",
 }: DocsLayoutProps) {
   const config = getConfig();
+
+  const navigation = await generateNavigation();
 
   return (
     <div

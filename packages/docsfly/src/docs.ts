@@ -16,9 +16,10 @@ import type {
 import remarkGfm from "remark-gfm";
 
 const isMonorepo = process.env.DOCSFLY_IS_MONOREPO === "true";
-const contentRootDir = isMonorepo
-  ? path.join(process.cwd(), "../../")
-  : process.cwd();
+// const contentRootDir = isMonorepo
+//   ? path.join(process.cwd(), "../../")
+//   : process.cwd();
+const contentRootDir = process.cwd(); // tempoarily
 
 // Hot reload functionality - no cache revalidation needed in development
 

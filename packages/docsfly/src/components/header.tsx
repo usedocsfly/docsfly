@@ -3,12 +3,11 @@ import { loadConfig } from "../config";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Search } from "./search";
-import { getAllDocs } from "../docs";
+import { DocNavItem, getAllDocs } from "../docs";
 import { VersionSelector } from "./version-selector";
-import { Separator } from "./ui/separator";
 import { MobileMenu } from "./mobile-menu";
 
-export async function Header() {
+export async function Header({ navigation }: { navigation: DocNavItem[] }) {
   const config = loadConfig();
   const docs = await getAllDocs();
 
@@ -18,7 +17,7 @@ export async function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo/Title */}
           <div className="flex items-center">
-            <MobileMenu config={config} docs={docs} />
+            <MobileMenu config={config} docs={docs} navigation={navigation} />
             {config.header && config.header.logo && (
               <img
                 src={config.header.logo}

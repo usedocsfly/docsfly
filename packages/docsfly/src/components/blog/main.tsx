@@ -1,6 +1,5 @@
 import { getConfig } from "../../config";
 import { getAllBlogPosts, getBlogPostBySlug } from "../../docs";
-import { Button } from "../ui/button";
 import { BlogListing } from "./listing";
 import { BlogPostComponent } from "./post";
 

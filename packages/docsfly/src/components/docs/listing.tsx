@@ -128,7 +128,7 @@ function groupDocsByCategory(docs: Doc[]): Record<string, Doc[]> {
   const grouped: Record<string, Doc[]> = {};
   
   docs.forEach((doc) => {
-    const category = doc.meta.category || 'Uncategorized';
+    const category = doc.slug.split('/')[0] || 'Uncategorized';
     if (!grouped[category]) {
       grouped[category] = [];
     }
